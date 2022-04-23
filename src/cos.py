@@ -1,3 +1,4 @@
+# from .pre import Preprocessor
 from pre import Preprocessor
 import re
 import math
@@ -9,7 +10,7 @@ class Ranking:
 
     def process_query(self,query):
 
-        p = Preprocessor()
+        p = Preprocessor('Abstract')
         p.PreprocessingChain()
         tokens = p.FilterTokens(query)
 
@@ -17,7 +18,7 @@ class Ranking:
         query_tfidf_index = self.BuildTfIdfVector(query_tf_index,p.idf_index)
 
         # TODO:  DOC count
-        self.CosineSimilarity(448,p.tfidf_index,query_tf_index)
+        return self.CosineSimilarity(448,p.tfidf_index,query_tfidf_index)
 
     def BuildTfVector(self,tokens):
 
@@ -32,12 +33,14 @@ class Ranking:
 
         print(query_tf_index)
 
+        df = len(tokens)
         for key in query_tf_index.keys():
 
             # query_tf_index[key] = 1 + math.log10(query_tf_index[key])
-            query_tf_index[key] = math.log10(1+query_tf_index[key])
-            # query_tf_index[key] = query_tf_index[key]
-
+            # query_tf_index[key] = math.log10(1+query_tf_index[key])
+            query_tf_index[key] = query_tf_index[key]
+            # query_tf_index[key] = query_tf_index[key]/df
+            
         print(query_tf_index)
         return query_tf_index
     
@@ -57,16 +60,18 @@ class Ranking:
     def CosineSimilarity(self,total_docs,docs_tfidf_index,query_tfidf_index):
         sim_score = {}
         mag_doc = {}
-        mag_query = {}
+        mag_query = 0.0
 
-        print(query_tfidf_index)
+        # print(query_tfidf_index)
 
         for key in query_tfidf_index.keys():
             print(key)
 
+            mag_query += query_tfidf_index[key]**2
+
             keys = list(map(int, [*docs_tfidf_index[key].keys()]))
             
-            print(keys)
+            # print(keys)
 
             for i in range(total_docs):
                 
@@ -74,32 +79,45 @@ class Ranking:
                     
                     if i not in sim_score.keys():
                         sim_score[i] = 0
-                        mag_query[i] = 0
                         mag_doc[i] = 0
 
+                    if i == 0:
+                        print(docs_tfidf_index[key][str(i)])
                     sim_score[i] += docs_tfidf_index[key][str(i)] * query_tfidf_index[key]
-                    mag_query[i] += query_tfidf_index[key]**2
                     mag_doc[i] += docs_tfidf_index[key][str(i)]**2
 
-            # print(i)
-        
-        for i in sim_score.keys():
-            sim_score[i] = sim_score[i] / mag_doc[i] * mag_query[i]
+        # cosine_sim(d,q) = (d . q) /  || d || . || q ||
+        print(math.sqrt(mag_query))
+        # print()
+        print(mag_doc)
+        # print(sim_score)
 
-        # sorted_tuples = sorted(sim_score.items(), key=lambda item: item[1],reverse=True)
-        # print(sorted_tuples)
-        print(sim_score)
-        result = [* sim_score.keys()]
+        for i in sim_score.keys():
+            # print(math.sqrt(mag_doc[i]))
+            sim_score[i] = sim_score[i] / (math.sqrt(mag_doc[i]) * math.sqrt(mag_query))
+
+        result = []
+
+        for key in sim_score.keys():
+            if sim_score[key] >= 0.001:
+                result.append(key)
+
+
         result = [x+1 for x in result]
         result.sort()
-        print(result)
+        return result
 
 
 r = Ranking()
-print()
 # r.process_query('deep')
 # r.process_query('weak heuristic')
-r.process_query('principle component analysis')
-# r.process_query('bootstrap')
+# r.process_query('principle component analysis')
+# r.process_query('human interaction')
+# print(r.process_query('bootstrap'))
 # r.process_query('diabetes and obesity')
 # r.process_query('github mashup apis')
+# r.process_query('prioritize and critical correlate')
+# print(r.process_query('local global clusters'))
+# r.process_query('supervised kernel k-means cluster')
+
+print(r.process_query('w2 w5 w6'))
