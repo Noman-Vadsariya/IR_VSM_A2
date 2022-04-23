@@ -50,10 +50,12 @@ class Preprocessor:
             self.tf_index = self.ReadFromDisk('tf_index')
             self.idf_index = self.ReadFromDisk('idf_index')
             self.tfidf_index = self.ReadFromDisk('tfidf_index')
+            self.LoadStopwordsList()
 
     def tokenize(self,text):
         text = text.lower()     #case folding
-        text = re.sub(r'-','',text)  # handling hyphen 
+        # text = re.sub(r'-','',text)  # handling hyphen 
+        text = re.sub(r'-',' ',text)  # handling hyphen 
         text = re.sub(r'[^\w\s]',' ',text)   #noise removal - replacing all types of [^a-zA-Z0-9] and [^\t\r\n\f] with space for splitting on space
         text = text.split()     #splitting on space
         return text
@@ -70,7 +72,7 @@ class Preprocessor:
 
         while '' in self.stopwords: self.stopwords.remove('')
         self.stopwords = [x.replace(' ','') for x in self.stopwords]
-    
+
     # returns true if term present in stopwords list
 
     def isStopword(self,term):
@@ -82,6 +84,16 @@ class Preprocessor:
         l = WordNetLemmatizer()
         return l.lemmatize(token)   
 
+    def FilterTokens(self,text):
+        
+        filteredList = []
+        tokens = self.tokenize(text)
+        for tok in tokens:
+            if not self.isStopword(tok):
+                tok = self.Lemmatization(tok)
+                filteredList.append(tok)
+
+        return filteredList
 
     def BuildTfIndex(self):
         
@@ -132,7 +144,7 @@ class Preprocessor:
     # df = No of Docs in which term appears
     def BuildIdfIndex(self):
         
-        print(self.noOfDocs)
+        # print(self.noOfDocs)
         # print(self.tf_index.keys())
 
         for word in self.tf_index.keys():
@@ -140,6 +152,7 @@ class Preprocessor:
             df = len(self.tf_index[word].keys())
 
             idf = math.log10( self.noOfDocs / df )
+            # idf = math.log10(df)/self.noOfDocs
 
             self.idf_index[word] = idf
 
@@ -155,7 +168,9 @@ class Preprocessor:
 
             for docNo in self.tf_index[word].keys():
                 
-                tf = 1 + math.log10(self.tf_index[word][docNo])     # tf = 1 + log(tf)
+                # tf = 1 + math.log10(self.tf_index[word][docNo])     # tf = 1 + log(tf)
+                tf = math.log10(1+self.tf_index[word][docNo])     # tf = log(1+tf)
+                # tf = self.tf_index[word][docNo]     # tf = tf / docFreq
                 idf = self.idf_index[word]
                 self.tfidf_index[word][docNo] = tf * idf
         
