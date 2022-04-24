@@ -28,7 +28,7 @@ def showDoc(id):
     try:
         return render_template(str(id) + ".txt")
     except:
-        return render_template(str(id+1) + ".txt")
+        return render_template(str(id+2) + ".txt")
 
 
 if __name__ == "__main__":

@@ -10,24 +10,20 @@ import math
 class Preprocessor:
     def __init__(self, FolderName=None):
 
-        self.tf_index = {}  # term frequency index
-        self.idf_index = {}  # inverse document frequency index
-        self.tfidf_index = {}  # tfidf index
+        self.tf_index = {}          # term frequency index
+        self.idf_index = {}         # inverse document frequency index
+        self.tfidf_index = {}       # tfidf index
 
-        self.noOfDocs = 0  # total document count
+        self.noOfDocs = 0           # total document count
 
-        self.stopwords = []  # stopword list
+        self.stopwords = []         # stopword list
 
-        self.CollectionDir = str(Path(__file__).parent.resolve()).replace(
-            "src", str(FolderName)
-        )  # Folder of Collection
+        self.CollectionDir = str(Path(__file__).parent.resolve()).replace("src", str(FolderName))  # Folder of Collection
 
-        self.DataDir = str(Path(__file__).parent.resolve()).replace(
-            "src", "data"
-        )  # Folder to Store Indexes
+        self.DataDir = str(Path(__file__).parent.resolve()).replace("src", "data")  # Folder to Store Indexes
 
+    
     # Invokes function for building , storing and loading indexes
-
     def PreprocessingChain(self):
 
         # Storing and Loading Indexes
@@ -38,8 +34,8 @@ class Preprocessor:
             # creating indexes
 
             self.BuildTfIndex()
-            self.BuildIdfIndex()
             self.length_normalization()
+            self.BuildIdfIndex()
             self.BuildTfIdfIndex()
 
             # creating data directory for storing and loading indexes
@@ -58,6 +54,7 @@ class Preprocessor:
             self.tfidf_index = self.ReadFromDisk("tfidf_index")
             self.noOfDocs = len(self.tf_index.keys())
 
+    
     def tokenize(self, text):
 
         text = text.lower()                   # case folding
@@ -66,6 +63,7 @@ class Preprocessor:
         text = text.split()                   # splitting on space
         return text
 
+    
     # reading stopwords from stopwords file
     def LoadStopwordsList(self):
 
@@ -85,10 +83,12 @@ class Preprocessor:
 
         self.stopwords = [x.replace(" ", "") for x in self.stopwords]   # removing extra endspaces
 
+    
     # returns true if term present in stopwords list
     def isStopword(self, term):
         return term in self.stopwords
 
+    
     # Lemmatization - WordNetLemmatizer used
     def Lemmatization(self, token):
         l = WordNetLemmatizer()
@@ -106,7 +106,10 @@ class Preprocessor:
 
         return filteredList
 
+
     # calculates term frequency for each unique term in each document.
+    # tf_index = {doc1 : { t1 : 3, t2: 4, ... ,tn: 5}, doc1 : { t1 : 2, t2: 1, ... ,tn: 4}, ... , docN : { t1 : 1, t2: 4, ... ,tn: 2} )  
+    
     def BuildTfIndex(self):
 
         # files are not read from directory in sorted order, so reading files of a directory and sorting their names
@@ -145,7 +148,7 @@ class Preprocessor:
         self.noOfDocs = docNo
 
     # Euclidean Normalization Vector / Magnitude of Vector => V / || V ||
-
+    
     def length_normalization(self):
 
         self.magnitude = [0] * self.noOfDocs        # each index stores magnitude for a particular document
@@ -160,6 +163,7 @@ class Preprocessor:
 
 
     # calculates inverse document frequency  for each unique term
+    # idf_index = { t1: idf-Val, t2: idf-Val , t3: idf-Val , ... , t4: idf-val }
 
     def BuildIdfIndex(self):
         df = {}
@@ -182,7 +186,8 @@ class Preprocessor:
 
 
     # calculates tf*idf  for each unique term
-
+    # tfidf_index = {doc1 : { t1 : 0.21, t2: 2.4, ... ,tn: 0.11}, doc1 : { t1 : 2.4, t2: 0.01, ... ,tn: 0.234}, ... , docN : { t1 : 0.21, t2: 0.344, ... ,tn: 0.2})
+    
     def BuildTfIdfIndex(self):
 
         for i in range(self.noOfDocs):

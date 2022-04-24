@@ -1,8 +1,6 @@
 # IR_VSM_A2
 
-
-
-##   Preprocessing chain
+##   Preprocessing Chain
     
   Parse document
     
