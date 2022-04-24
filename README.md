@@ -48,3 +48,10 @@
 
   Filter documents based on alpha=0.0001
 
+## Dependencies
+
+    pip install flask
+  
+## Run
+  
+    app.py
