@@ -7,6 +7,7 @@ from pathlib import Path
 import math
 
 # Builds and Stores Term frequency index, Inverse document index and TFIDF index from Collection of Documents
+
 class Preprocessor:
     def __init__(self, FolderName=None):
 
