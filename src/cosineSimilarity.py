@@ -4,7 +4,7 @@ import re
 import math
 
 #   takes query as input, preprocesses query , finds cosine similarity b/w query and every document in the collection
-#   return top K document based on alpha
+#   returns top K document based on alpha
  
 class Similarity:
 
@@ -21,7 +21,9 @@ class Similarity:
         return self.CosineSimilarity(p.noOfDocs,p.tfidf_index,query_tfidf_index)  
 
     
-    # calculate term frequency vector for query
+    # calculate term frequency vector for query and also length normalize using euclidean length
+    # { t1 : 2, t2: 1, ... ,tn: 4}
+
     def BuildTfVector(self,tokens):
 
         query_tf_index = {}
@@ -72,7 +74,7 @@ class Similarity:
         
         sim_score = {}
 
-        # Since we have normalized term freqeuncy = Dot Product
+        # Since we have normalized term freqeuncy, cosine_sim(d,q) = Dot Product(d,q)
         # cosine_sim(d,q) = (d . q) /  || d || . || q || =  d . q
 
         for i in range(noOfDocs):

@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import math
 
-# Builds and Stores Term frequency index, Inverse document index and tfidf index from Collection of Documents
+# Builds and Stores Term frequency index, Inverse document index and TFIDF index from Collection of Documents
 class Preprocessor:
     def __init__(self, FolderName=None):
 
@@ -147,7 +147,7 @@ class Preprocessor:
 
         self.noOfDocs = docNo
 
-    # Euclidean Normalization Vector / Magnitude of Vector => V / || V ||
+    # Euclidean Normalization = Vector / Magnitude of Vector => V / || V ||
     
     def length_normalization(self):
 
