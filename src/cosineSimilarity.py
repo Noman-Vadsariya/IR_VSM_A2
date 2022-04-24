@@ -67,7 +67,7 @@ class Similarity:
             
 
     # finds cosine similarity b/w query and every document in the collection
-    
+
     def CosineSimilarity(self,noOfDocs,docs_tfidf_index,query_tfidf_index):
         
         sim_score = {}
@@ -86,7 +86,6 @@ class Similarity:
 
                     sim_score[i] += (query_tfidf_index[key] * docs_tfidf_index[str(i)][key])
 
-        # print(sim_score)
 
         # filtering based on alpha = 0.001
 
@@ -97,26 +96,5 @@ class Similarity:
                 result.append(key)
 
         result = [x+1 for x in result]
-        result.sort()
-        # print(result)
+        result.sort()       # displaying in numerical order, as in gold query set
         return result
-
-
-# r = Ranking()
-# r.process_query('deep')
-# r.process_query('weak heuristic')
-# r.process_query('principle component analysis')
-# r.process_query('human interaction')
-# r.process_query('supervised kernel k-means cluster')
-# r.process_query('patients depression anxiety')
-# r.process_query('local global clusters')
-# r.process_query('synergy analysis')
-# r.process_query('github mashup apis')
-# r.process_query('Bayesian nonparametric')
-# r.process_query('diabetes and obesity')
-# print(r.process_query('bootstrap'))
-# r.process_query('ensemble')
-# r.process_query('markov ')
-# r.process_query('prioritize and critical correlate')
-
-# print(r.process_query('w2 w5 w6'))
