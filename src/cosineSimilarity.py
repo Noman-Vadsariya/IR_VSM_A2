@@ -22,7 +22,7 @@ class Similarity:
 
     
     # calculate term frequency vector for query and also length normalize using euclidean length
-    # { t1 : 2, t2: 1, ... ,tn: 4}
+    # query_tf_index = { t1 : 2, t2: 1, ... ,tn: 4}
 
     def BuildTfVector(self,tokens):
 
@@ -55,6 +55,8 @@ class Similarity:
     
 
     #   calculating tfidf for query
+    #   query_tfidf_index = { t1 : 2.4, t2: 0.01, ... ,tn: 0.234}
+
     def BuildTfIdfVector(self,query_tf_index,idf_index):
         
         query_tfidf_index = {}
