@@ -71,6 +71,7 @@ h3.cardText{
 
 .input {
   padding: 10px;
+  outline-color: rgb(123, 31, 162);
 }
 
 .query {
@@ -85,11 +86,6 @@ h3.cardText{
 .resultDiv {
   padding-left: 150px;
   padding-top: 20px;
-}
-
-.btn{
-  background-color: white;
-  color: rgb(123, 31, 162);
 }
 
 a,

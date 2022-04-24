@@ -1,7 +1,6 @@
-from asyncio import tasks
-from django.http import QueryDict
+
 from flask import Flask, render_template, request
-from src.QueryProcessor import QueryProcessor
+from src.queryProcessor import QueryProcessor
 
 app = Flask(__name__)
 
@@ -23,11 +22,13 @@ def results():
     else:
         return render_template("result.html")
 
-# route to show result
-@app.route("/showDoc/<string:id>", methods=["POST", "GET"])
-def showDoc(id):
-    return render_template(id + ".txt")
-    
+# route to show result document
+@app.route("/showDoc/<int:id>", methods=["POST", "GET"])
+def showDoc(id):   
+    try:
+        return render_template(str(id) + ".txt")
+    except:
+        return render_template(str(id+1) + ".txt")
 
 
 if __name__ == "__main__":

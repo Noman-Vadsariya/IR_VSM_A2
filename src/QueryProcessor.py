@@ -1,4 +1,4 @@
-from .cos import Ranking
+from .cosineSimilarity import Similarity
 
 # Receives Query from frontend and responds with a resultset
 
@@ -12,8 +12,8 @@ class QueryProcessor():
                 
             try:
                 processingCost = 0
-                r = Ranking()
-                result_set = r.process_query(query)
+                s = Similarity()
+                result_set = s.process_query(query)
             except:
                 return ["error",query]
 
