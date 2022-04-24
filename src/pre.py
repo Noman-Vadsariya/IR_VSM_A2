@@ -36,6 +36,7 @@ class Preprocessor:
             self.BuildTfIndex()
             self.BuildIdfIndex()
             self.BuildTfIdfIndex()
+            # self.CalculateMagnitudes()
 
             os.mkdir(
                 self.DataDir
@@ -43,27 +44,27 @@ class Preprocessor:
 
             # storing indexes
 
-            self.WriteToDisk(self.documents,'documents')
+            self.WriteToDisk(self.documents, "documents")
             self.WriteToDisk(self.tf_index, "tf_index")
             self.WriteToDisk(self.idf_index, "idf_index")
             self.WriteToDisk(self.tfidf_index, "tfidf_index")
-            self.WriteToDisk(self.doc_magnitudes,'doc_magnitudes')
+            self.WriteToDisk(self.doc_magnitudes, "doc_magnitudes")
 
         else:
 
             # loading indexes from data directory
 
-            self.documents = self.ReadFromDisk('documents')
+            self.documents = self.ReadFromDisk("documents")
             self.tf_index = self.ReadFromDisk("tf_index")
             self.idf_index = self.ReadFromDisk("idf_index")
             self.tfidf_index = self.ReadFromDisk("tfidf_index")
-            self.doc_magnitudes = self.ReadFromDisk('doc_magnitudes')
+            self.doc_magnitudes = self.ReadFromDisk("doc_magnitudes")
             self.LoadStopwordsList()
 
     def tokenize(self, text):
         text = text.lower()  # case folding
         # text = re.sub(r'-','',text)  # handling hyphen
-        text = re.sub(r"-", ' ', text)  # handling hyphen
+        text = re.sub(r"-", " ", text)  # handling hyphen
         text = re.sub(
             r"[^\w\s]", " ", text
         )  # noise removal - replacing all types of [^a-zA-Z0-9] and [^\t\r\n\f] with space for splitting on space
@@ -128,13 +129,14 @@ class Preprocessor:
 
                 text = f.read()
                 text_words = self.tokenize(text)
-                self.documents[docNo] = 0
+                self.documents[str(docNo)] = 0
 
                 for word in text_words:
 
                     if not self.isStopword(word):  # Stopwords Removal
 
-                        self.documents[docNo] += 1
+                        self.documents[str(docNo)] += 1
+
                         word = self.Lemmatization(word)  # lemmatization
 
                         if word not in self.tf_index.keys():
@@ -164,8 +166,8 @@ class Preprocessor:
 
             df = len(self.tf_index[word].keys())
 
-            idf = math.log10(self.noOfDocs / df)
-            # idf = math.log10(df)/self.noOfDocs
+            idf = math.log(self.noOfDocs / df)
+            # idf = math.log(df)/self.noOfDocs
 
             self.idf_index[word] = idf
 
@@ -175,34 +177,40 @@ class Preprocessor:
     def BuildTfIdfIndex(self):
 
         docNo = 0
+        temp = 0
         for word in self.tf_index.keys():
 
             self.tfidf_index[word] = {}
 
             # print(self.tf_index[word].keys())
             for docNo in self.tf_index[word].keys():
-                
-                tf = self.tf_index[word][docNo] / self.documents[docNo]
+
+                tf = self.tf_index[word][docNo] / self.documents[str(docNo)]
                 # tf = self.tf_index[word][docNo]
+                # tf = math.log(1+self.tf_index[word][docNo])
                 idf = self.idf_index[word]
                 self.tfidf_index[word][str(docNo)] = tf * idf
-                
+
                 if docNo not in self.doc_magnitudes.keys():
-                    if docNo == 2:
-                        print(f'{word} => {tf * idf}')
-                     
-                    self.doc_magnitudes[str(docNo)] = (tf * idf) ** 2
+                    if docNo == 104:
+                        # print(f'{word} => {(tf * idf) **2}')
+                        temp += (tf * idf) ** 2
+
+                    self.doc_magnitudes[docNo] = (tf * idf) ** 2
                 else:
-                    
-                    if docNo == 2:
-                        print(f'{word} => {(tf * idf)**2}')
 
-                    self.doc_magnitudes[str(docNo)] += (tf * idf) ** 2
+                    if docNo == 104:
+                        # print(f'{word} => {(tf * idf)**2}')
+                        temp += (tf * idf) ** 2
 
-        for i in self.doc_magnitudes:
-            self.doc_magnitudes[i] = math.sqrt(self.doc_magnitudes[i])
+                    self.doc_magnitudes[docNo] += (tf * idf) ** 2
 
         print(self.doc_magnitudes)
+
+        for i in self.doc_magnitudes.keys():
+            self.doc_magnitudes[i] = math.sqrt(self.doc_magnitudes[i])
+
+        self.doc_magnitudes = {str(key):float(value) for key,value in self.doc_magnitudes.items()}
 
     def WriteToDisk(self, index, indexType):
         filename = "\\" + indexType + ".txt"
@@ -219,5 +227,6 @@ class Preprocessor:
         return index
 
 
-# p = Preprocessor("sample")
+# p = Preprocessor("Abstracts")
+# p = Preprocessor("Abstracts")
 # p.PreprocessingChain()

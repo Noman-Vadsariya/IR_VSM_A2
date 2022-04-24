@@ -24,10 +24,10 @@ def results():
         return render_template("result.html")
 
 # route to show result
-@app.route("/showDoc/<id>", methods=["POST", "GET"])
+@app.route("/showDoc/<string:id>", methods=["POST", "GET"])
 def showDoc(id):
-    # print(id,encoding = 'unicode_escape')
     return render_template(id + ".txt")
+    
 
 
 if __name__ == "__main__":

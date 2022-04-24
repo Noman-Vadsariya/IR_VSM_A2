@@ -7,6 +7,13 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel= "stylesheet" href= "{{ url_for('static',filename='css/result.css') }}">
+        <style>
+            body{
+                background-repeat: no-repeat;
+                background-size: 100%;
+                background-image: url( {{ url_for('static',filename='1.jpg') }} )
+            }
+        </style>
     </head>
     <body>
         <div>
@@ -20,17 +27,14 @@
         
         <div class="resultDiv">
             {% if tasks[0] != "error" %}
-            <h3>Showing result for "{{tasks[2]}}"</h3>
-            {% if tasks[1] != -1 %}
-                <h4>Query Processing cost = {{tasks[1]}}</h4>
-            {% endif %}
+            <h3>Showing results for "{{tasks[2]}}"</h3>
             <div class="flex-container">
                 {% for task in tasks[0] %}
                 <div class="card">
                     <div class="container">
                         <h3 class="cardText">{{task}}</h3>
                     </div>
-                    <button>
+                    <button class="btn">
                         <a href="/showDoc/{{task}}" target="_blank">
                             View Document
                         </a>

@@ -1,9 +1,6 @@
 * {
   box-sizing: border-box;
-}
-
-body{
-    background-color: 	#181818;
+  
 }
 
 div.main {
@@ -22,9 +19,11 @@ div.components {
 .heading {
   text-align: center;
   font-size: 4.5em;
+  font-family: Georgia, 'Times New Roman', Times, serif ;
   text-decoration-thickness: 8px;
   margin: 0;
-  color: #e8eaed
+  /* color:rgb(171, 71, 188) */
+  color:rgb(171, 71, 188)
 }
 
 div.btns {
@@ -37,7 +36,7 @@ div.btns {
     background-color: #303134;
     border: 1px solid #303134;
     border-radius: 4px;
-    color: #e8eaed;
+    color: black;
     font-family: arial,sans-serif;
     font-size: 14px;
     margin: 11px 4px;
@@ -52,13 +51,16 @@ div.btns {
 
 .input {
   align-items: center;
-  padding: 12px 30px;
-  margin: 20px;
+  padding: 20px 30px;
+  margin-top: 50px;
   border-radius: 18px;
   width: 100%;
-  min-width: 600px;
-  max-width: 600px;
-  font-size: medium;
+  margin-left: 20px;
+  min-width: 700px;
+  max-width: 700px;
+  font-size: 20px;
+  outline-color: rgb(123, 31, 162);
+
 }
 
 a, a:hover, a:focus, a:active {
