@@ -47,7 +47,7 @@ class Preprocessor:
             self.WriteToDisk(self.tf_index, "tf_index")
             self.WriteToDisk(self.idf_index, "idf_index")
             self.WriteToDisk(self.tfidf_index, "tfidf_index")
-            # self.WriteToDisk(self.dictionary,'Dictionary')
+            self.WriteToDisk(self.doc_magnitudes,'doc_magnitudes')
 
         else:
 
@@ -57,6 +57,7 @@ class Preprocessor:
             self.tf_index = self.ReadFromDisk("tf_index")
             self.idf_index = self.ReadFromDisk("idf_index")
             self.tfidf_index = self.ReadFromDisk("tfidf_index")
+            self.doc_magnitudes = self.ReadFromDisk('doc_magnitudes')
             self.LoadStopwordsList()
 
     def tokenize(self, text):
@@ -157,7 +158,7 @@ class Preprocessor:
     # df = No of Docs in which term appears
     def BuildIdfIndex(self):
 
-        print(self.noOfDocs)
+        # print(self.noOfDocs)
 
         for word in self.tf_index.keys():
 
@@ -172,18 +173,36 @@ class Preprocessor:
         # self.WriteToDisk(self.idf_index,'idf_index')
 
     def BuildTfIdfIndex(self):
+
+        docNo = 0
         for word in self.tf_index.keys():
 
             self.tfidf_index[word] = {}
 
+            # print(self.tf_index[word].keys())
             for docNo in self.tf_index[word].keys():
                 
-                print(docNo , self.documents[docNo])
-
-                # tf = self.tf_index[word][docNo] / self.documents[docNo]
-                tf = self.tf_index[word][docNo]
+                tf = self.tf_index[word][docNo] / self.documents[docNo]
+                # tf = self.tf_index[word][docNo]
                 idf = self.idf_index[word]
-                self.tfidf_index[word][docNo] = tf * idf
+                self.tfidf_index[word][str(docNo)] = tf * idf
+                
+                if docNo not in self.doc_magnitudes.keys():
+                    if docNo == 2:
+                        print(f'{word} => {tf * idf}')
+                     
+                    self.doc_magnitudes[str(docNo)] = (tf * idf) ** 2
+                else:
+                    
+                    if docNo == 2:
+                        print(f'{word} => {(tf * idf)**2}')
+
+                    self.doc_magnitudes[str(docNo)] += (tf * idf) ** 2
+
+        for i in self.doc_magnitudes:
+            self.doc_magnitudes[i] = math.sqrt(self.doc_magnitudes[i])
+
+        print(self.doc_magnitudes)
 
     def WriteToDisk(self, index, indexType):
         filename = "\\" + indexType + ".txt"
@@ -200,5 +219,5 @@ class Preprocessor:
         return index
 
 
-p = Preprocessor("sample")
-p.PreprocessingChain()
+# p = Preprocessor("sample")
+# p.PreprocessingChain()
